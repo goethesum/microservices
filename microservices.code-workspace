@@ -7,10 +7,13 @@
 			"path": "broker"
 		},
 		{
-			"path": "project"
+			"path": "auth-service"
 		},
 		{
-			"path": "auth-service"
+			"path": "logger-service"
+		},
+		{
+			"path": "project"
 		}
 	],
 	"settings": {}
