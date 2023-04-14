@@ -3,10 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 )
 
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
+	log.Println("hit authenticate")
 	var requestPayload struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -14,6 +16,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println(err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -21,12 +24,14 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	// validate the user against the database
 	user, err := app.Models.User.GetByEmail(requestPayload.Email)
 	if err != nil {
+		log.Println(err)
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
 		return
 	}
 
 	valid, err := user.PasswordMatches(requestPayload.Password)
 	if err != nil || !valid {
+		log.Println(err)
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
 		return
 	}
